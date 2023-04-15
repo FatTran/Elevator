@@ -1,0 +1,86 @@
+C51 COMPILER V9.60.7.0   QUEUE                                                             04/14/2023 12:43:20 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE QUEUE
+OBJECT MODULE PLACED IN .\Objects\queue.obj
+COMPILER INVOKED BY: D:\KeilC\C51\BIN\C51.EXE queue.c RTX51 OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings
+                    -\queue.lst) TABS(2) OBJECT(.\Objects\queue.obj)
+
+line level    source
+
+*** WARNING C500 IN LINE 1 OF queue.c: INCORRECT LICENSE ID CODE (LIC) IN 'TOOLS.INI'
+   1          #include<stdio.h>
+   2          void up_queue(int floor, int floor_queue[], int n){
+   3   1          int i, j;
+   4   1          int index = 0;
+   5   1          for(i = n - 1; i >  index ; i--){
+   6   2            floor_queue[i] = floor_queue[i - 1];
+   7   2          }
+   8   1          floor_queue[index] = floor;
+   9   1          for (i = 0; i < n; i++) {
+  10   2            if (floor_queue[i] != 0) {
+  11   3              for (j = i + 1; j < n; j++) {
+  12   4                if (floor_queue[j] != 0) {
+  13   5                  if (floor_queue[i] > floor_queue[j]) {
+  14   6                    int temp = floor_queue[i];
+  15   6                    floor_queue[i] = floor_queue[j];
+  16   6                    floor_queue[j] = temp;
+  17   6                    }
+  18   5                  }
+  19   4                }
+  20   3              }
+  21   2            }
+  22   1          }
+  23          void down_queue( int floor, int floor_queue[], int n){
+  24   1          int i, j;
+  25   1          int index = 0;
+  26   1          for(i = n - 1; i >  index ; i--){
+  27   2            floor_queue[i] = floor_queue[i - 1];
+  28   2          }
+  29   1          floor_queue[index] = floor;
+  30   1          for (i = 0; i < n; i++) {
+  31   2            if (floor_queue[i] != 0) {
+  32   3              for (j = i + 1; j < n; j++) {
+  33   4                if (floor_queue[j] != 0) {
+  34   5                  if (floor_queue[i] < floor_queue[j]) {
+  35   6                    int temp = floor_queue[i];
+  36   6                    floor_queue[i] = floor_queue[j];
+  37   6                    floor_queue[j] = temp;
+  38   6                    }
+  39   5                  }
+  40   4                }
+  41   3              }
+  42   2            }
+  43   1          }
+  44          void delete_queue(int index, int floor_queue[], int n){
+  45   1        int i,j;
+  46   1        for(i = 0 ; i < n; i++){
+  47   2          if(i == index){
+  48   3            for(j = i ; j < n; j++){
+  49   4              if (j + 1 < n) {
+  50   5                floor_queue[j] = floor_queue[j + 1];
+  51   5              }
+  52   4              else {
+  53   5                floor_queue[j] = 0;
+C51 COMPILER V9.60.7.0   QUEUE                                                             04/14/2023 12:43:20 PAGE 2   
+
+  54   5              }
+  55   4            }
+  56   3            break;
+  57   3          }
+  58   2        }
+  59   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    828    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----      41
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)

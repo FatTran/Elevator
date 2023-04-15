@@ -1,0 +1,279 @@
+C51 COMPILER V9.60.7.0   MAIN                                                              04/14/2023 12:43:20 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: D:\KeilC\C51\BIN\C51.EXE main.c RTX51 OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\
+                    -main.lst) TABS(2) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+*** WARNING C500 IN LINE 1 OF main.c: INCORRECT LICENSE ID CODE (LIC) IN 'TOOLS.INI'
+   1          #include<RTX51TNY.H>
+   2          #include<REGX52.H>
+   3          #include "queue.h"
+   4          sbit BUTTON1 = P3^0;
+   5          sbit BUTTON2 = P3^1;
+   6          sbit BUTTON3 = P3^2;
+   7          sbit BUTTON4 = P3^3;
+   8          sbit BUTTON5 = P3^4;
+   9          sbit BUTTON6 = P3^5;
+  10          sbit BUTTON7 = P3^6;
+  11          sbit BUTTON8 = P3^7;
+  12          sbit check = P1^7;
+  13          sbit check1 = P1^6;
+  14          sbit IN1 = P1^0;
+  15          sbit IN2 = P1^1;
+  16          sbit open = P1^2;
+  17          sbit close = P1^3;
+  18          int floor;
+  19          int cur_floor = 1;
+  20          int temp_floor;
+  21          //1 tick = 10ms
+  22          const int move_time = 2;
+  23          const int open_time = 1;
+  24          const int close_time = 1;
+  25          int up_floor_queue[8] = {0};
+  26          int down_floor_queue[8] = {0};
+  27          int prev_dir = 1;
+  28          int dir = 0;
+  29          // up = 1, down = -1, stop = 0
+  30          void Startup(void) _task_ 0{
+  31   1        P1 = 0;
+  32   1        P2 = 0;
+  33   1        os_create_task(0);
+  34   1        os_create_task(1);
+  35   1        os_create_task(2);
+  36   1        os_create_task(3);
+  37   1        os_delete_task(0);
+  38   1      }
+  39          void InputFloor(void) _task_ 1{
+  40   1        while(1){
+  41   2          if(BUTTON1 == 0){
+  42   3            floor = 1;
+  43   3            if(floor > cur_floor){
+  44   4              up_queue( floor, up_floor_queue, 8);
+  45   4            }
+  46   3            else{
+  47   4              down_queue( floor, down_floor_queue, 8);
+  48   4            }
+  49   3            os_send_signal(3);
+  50   3            while(BUTTON1 == 0);
+  51   3          }
+  52   2          if(BUTTON2 == 0){
+  53   3            floor = 2;
+C51 COMPILER V9.60.7.0   MAIN                                                              04/14/2023 12:43:20 PAGE 2   
+
+  54   3            if(floor > cur_floor){
+  55   4              up_queue( floor, up_floor_queue, 8);
+  56   4            }
+  57   3            else{
+  58   4              down_queue( floor, down_floor_queue, 8);
+  59   4            }
+  60   3            os_send_signal(3);
+  61   3            while(BUTTON2 == 0);
+  62   3          }
+  63   2          if(BUTTON3 == 0){
+  64   3            floor = 3;
+  65   3            if(floor > cur_floor){
+  66   4              up_queue( floor, up_floor_queue, 8);
+  67   4            }
+  68   3            else{
+  69   4              down_queue( floor, down_floor_queue, 8);
+  70   4            }
+  71   3            os_send_signal(3);
+  72   3            while(BUTTON3 == 0);
+  73   3          }
+  74   2          if(BUTTON4 == 0){
+  75   3            floor = 4;
+  76   3            if(floor > cur_floor){
+  77   4              up_queue( floor, up_floor_queue, 8);
+  78   4            }
+  79   3            else{
+  80   4              down_queue( floor, down_floor_queue, 8);
+  81   4            }
+  82   3            os_send_signal(3);
+  83   3            while(BUTTON4 == 0);
+  84   3          }
+  85   2          if(BUTTON5 == 0){
+  86   3            floor = 5;
+  87   3            if(floor > cur_floor){
+  88   4              up_queue( floor, up_floor_queue, 8);
+  89   4            }
+  90   3            else{
+  91   4              down_queue( floor, down_floor_queue, 8);
+  92   4            }
+  93   3            os_send_signal(3);
+  94   3            while(BUTTON5 == 0);
+  95   3          }
+  96   2          if(BUTTON6 == 0){
+  97   3            floor = 6;
+  98   3            if(floor > cur_floor){
+  99   4              up_queue( floor, up_floor_queue, 8);
+ 100   4            }
+ 101   3            else{
+ 102   4              down_queue( floor, down_floor_queue, 8);
+ 103   4            }
+ 104   3            os_send_signal(3);
+ 105   3            while(BUTTON6 == 0);
+ 106   3          }
+ 107   2          if(BUTTON7 == 0){
+ 108   3            floor = 7;
+ 109   3            if(floor > cur_floor){
+ 110   4              up_queue( floor, up_floor_queue, 8);
+ 111   4            }
+ 112   3            else{
+ 113   4              down_queue( floor, down_floor_queue, 8);
+ 114   4            }
+ 115   3            os_send_signal(3);
+C51 COMPILER V9.60.7.0   MAIN                                                              04/14/2023 12:43:20 PAGE 3   
+
+ 116   3            while(BUTTON7 == 0);
+ 117   3          }
+ 118   2          if(BUTTON8 == 0){
+ 119   3            floor = 8;
+ 120   3            if(floor > cur_floor){
+ 121   4              up_queue( floor, up_floor_queue, 8);
+ 122   4            }
+ 123   3            else{
+ 124   4              down_queue( floor, down_floor_queue, 8);
+ 125   4            }
+ 126   3            os_send_signal(3);
+ 127   3            while(BUTTON8 == 0);
+ 128   3          }
+ 129   2        }
+ 130   1      }
+ 131          
+ 132          void FloorDisplay(void) _task_ 2{
+ 133   1        while(1){
+ 134   2          switch(cur_floor){
+ 135   3            case 1:
+ 136   3              P2 = 0x06;
+ 137   3              break;
+ 138   3            case 2:
+ 139   3              P2 = 0x5B;
+ 140   3              break;
+ 141   3            case 3:
+ 142   3              P2 = 0x4F;
+ 143   3              break;
+ 144   3            case 4:
+ 145   3              P2 = 0x66;
+ 146   3              break;
+ 147   3            case 5:
+ 148   3              P2 = 0x6D;
+ 149   3              break;
+ 150   3            case 6:
+ 151   3              P2 = 0x7D;
+ 152   3              break;
+ 153   3            case 7:
+ 154   3              P2 = 0x07;
+ 155   3              break;
+ 156   3            case 8:
+ 157   3              P2 = 0x7F;
+ 158   3              break;
+ 159   3          }
+ 160   2        }
+ 161   1      }
+ 162          void Move(void) _task_ 3{
+ 163   1        while(1){
+ 164   2          os_wait1(K_SIG);
+ 165   2          os_clear_signal(3);
+ 166   2          if(floor == cur_floor){
+ 167   3          //open door
+ 168   3            open = 1;
+ 169   3            os_wait2(K_TMO, open_time * 100);
+ 170   3            open = 0;
+ 171   3            os_wait2(K_TMO, 100);
+ 172   3            close = 1;
+ 173   3            os_wait2(K_TMO, close_time * 100);
+ 174   3            close = 0;
+ 175   3          }
+ 176   2          if(floor > cur_floor){
+ 177   3          // move up
+C51 COMPILER V9.60.7.0   MAIN                                                              04/14/2023 12:43:20 PAGE 4   
+
+ 178   3            while(cur_floor < up_floor_queue[0]){
+ 179   4              IN1 = 1;
+ 180   4              IN2 = 0;
+ 181   4              os_wait(K_TMO, move_time * 100 , 0);
+ 182   4              cur_floor = cur_floor + 1;
+ 183   4              if(cur_floor == up_floor_queue[0]){
+ 184   5                IN1 = 0;
+ 185   5                IN2 = 0;
+ 186   5                delete_queue(0, up_floor_queue, 8);
+ 187   5                open = 1;
+ 188   5                os_wait2(K_TMO, open_time * 100);
+ 189   5                open = 0;
+ 190   5                os_wait2(K_TMO, 100);
+ 191   5                close = 1;
+ 192   5                os_wait2(K_TMO, close_time * 100);
+ 193   5                close = 0;
+ 194   5              }
+ 195   4            }
+ 196   3          }
+ 197   2          //move down
+ 198   2          if(floor < cur_floor){
+ 199   3            while(cur_floor > down_floor_queue[0]){
+ 200   4              if(cur_floor != 1){
+ 201   5                IN1 = 0;
+ 202   5                IN2 = 1;
+ 203   5                os_wait2(K_TMO, move_time * 100);
+ 204   5                cur_floor = cur_floor - 1;
+ 205   5                if(cur_floor == down_floor_queue[0]){
+ 206   6                  IN1 = 0;
+ 207   6                  IN2 = 0;
+ 208   6                  delete_queue(0, down_floor_queue, 8);
+ 209   6                  open = 1;
+ 210   6                  os_wait2(K_TMO, open_time * 100);
+ 211   6                  open = 0;
+ 212   6                  os_wait2(K_TMO, 100);
+ 213   6                  close = 1;
+ 214   6                  os_wait2(K_TMO, close_time * 100);
+ 215   6                  close = 0;
+ 216   6                }
+ 217   5              }
+ 218   4              else{
+ 219   5                IN1 = 0;
+ 220   5                IN2 = 0;
+ 221   5              }
+ 222   4            }
+ 223   3          }
+ 224   2        }
+ 225   1      }
+ 226          /*void up(void) _task_ 4{
+ 227            while(1){
+ 228              check = 1;
+ 229              os_wait2(K_TMO, 200);
+ 230              check1 = 1;
+ 231            }
+ 232          }*/
+ 233          /*void down(void) _task_ 5{
+ 234            while(1){
+ 235              os_wait1(K_SIG);
+ 236              IN1 = 0;
+ 237              IN2 = 1;
+ 238            }
+ 239          }
+C51 COMPILER V9.60.7.0   MAIN                                                              04/14/2023 12:43:20 PAGE 5   
+
+ 240          void stop(void) _task_ 6{
+ 241            while(1){
+ 242              os_wait1(K_SIG);
+ 243              IN1 = 0;
+ 244              IN2 = 0;
+ 245            }
+ 246          }*/
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   1048    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     48    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)
