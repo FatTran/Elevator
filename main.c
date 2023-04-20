@@ -168,7 +168,7 @@ void Move(void) _task_ 3
 					os_wait2(K_TMO, move_time * 25);
 					cur_floor = cur_floor - 1;
 					
-					if(cur_floor == down_floor_queue[0] && cur_floor != 0)
+					if(cur_floor == down_floor_queue[0] && cur_floor != 1)
 						{
 						os_send_signal(4);
 						delete_queue(down_floor_queue, 8);
@@ -179,9 +179,8 @@ void Move(void) _task_ 3
 						os_send_signal(6);
 						os_wait2(K_TMO, close_time * 25);
 						}
-					if(cur_floor - 1 == 0){
+					if(cur_floor == 1){
 						os_send_signal(4);
-						cur_floor--;
 						break;
 					}
 				}
