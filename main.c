@@ -14,6 +14,8 @@ sbit IN2 = P1^1;
 sbit open = P1^2;
 sbit close = P1^3;
 int floor;
+//1s = 100 ticks
+int tps = 100; //ticks per second
 int cur_floor = 1;
 const int move_time = 2;
 const int open_time = 1;
@@ -25,7 +27,6 @@ void Init(void) _task_ 0{
 	P1 = 0;
 	P2 = 0;
 	P3 = 0;
-	os_create_task(0);
 	os_create_task(1);
 	os_create_task(2);
 	os_create_task(3);
@@ -34,6 +35,7 @@ void Init(void) _task_ 0{
 	os_create_task(6);
 	os_delete_task(0);
 }
+
 void InputFloor(void) _task_ 1{
 	while(1){
 		if(BUTTON1 == 1){
@@ -80,12 +82,6 @@ void InputFloor(void) _task_ 1{
 		}
 		if(BUTTON8 == 1){
 			floor = 8;
-			/*if(floor > cur_floor && !checker(floor, up_floor_queue, 8)){
-				up_queue( floor, up_floor_queue, 8);
-			}
-			if(floor < cur_floor && !checker(floor, up_floor_queue, 8)){
-				down_queue( floor, down_floor_queue, 8);
-			}*/
 			add_queue(floor, cur_floor, up_floor_queue, down_floor_queue);
 			os_send_signal(3);
 			while(BUTTON8 == 1);
@@ -131,12 +127,12 @@ void Move(void) _task_ 3
 		if(floor == cur_floor)
 			{
 			os_send_signal(4);
-			os_wait2(K_TMO, 25);
+			os_wait2(K_TMO, tps);
 			os_send_signal(5);
-			os_wait2(K_TMO, open_time * 25);
-			os_wait2(K_TMO, 25);
+			os_wait2(K_TMO, open_time * tps);
+			os_wait2(K_TMO, tps);
 			os_send_signal(6);
-			os_wait2(K_TMO, close_time * 25);
+			os_wait2(K_TMO, close_time * tps);
 			}
 		if(floor > cur_floor)
 			{
@@ -144,40 +140,40 @@ void Move(void) _task_ 3
 				{
 				IN1 = 1;
 				IN2 = 0;
-				os_wait2(K_TMO, move_time * 25);
+				os_wait2(K_TMO, move_time * tps);
 				cur_floor = cur_floor + 1;
 				if(cur_floor == up_floor_queue[0])
 					{
+						delete_queue(up_floor_queue);
 						os_send_signal(4);
-						delete_queue(up_floor_queue, 8);
-						os_wait2(K_TMO, 25);
+						os_wait2(K_TMO, tps);
 						os_send_signal(5);
-						os_wait2(K_TMO, open_time * 25);
-						os_wait2(K_TMO, 25);
+						os_wait2(K_TMO, open_time * tps);
+						os_wait2(K_TMO, tps);
 						os_send_signal(6);
-						os_wait2(K_TMO, open_time * 25);
+						os_wait2(K_TMO, open_time * tps);
 					}
 				}
 			}
 		if(floor < cur_floor)
 			{
-			while(cur_floor > down_floor_queue[0] && cur_floor != 0)
+			while(cur_floor > down_floor_queue[0])
 				{
 					IN1 = 0;
 					IN2 = 1;
-					os_wait2(K_TMO, move_time * 25);
+					os_wait2(K_TMO, move_time * tps);
 					cur_floor = cur_floor - 1;
 					
 					if(cur_floor == down_floor_queue[0] && cur_floor != 1)
 						{
+						delete_queue(down_floor_queue);
 						os_send_signal(4);
-						delete_queue(down_floor_queue, 8);
-						os_wait2(K_TMO, 25);
+						os_wait2(K_TMO, tps);
 						os_send_signal(5);
-						os_wait2(K_TMO, open_time * 25);
-						os_wait2(K_TMO, 25);
+						os_wait2(K_TMO, open_time * tps);
+						os_wait2(K_TMO, tps);
 						os_send_signal(6);
-						os_wait2(K_TMO, close_time * 25);
+						os_wait2(K_TMO, close_time * tps);
 						}
 					if(cur_floor == 1){
 						os_send_signal(4);
@@ -202,7 +198,7 @@ void OpenDoor(void) _task_ 5
 	{
 		os_wait1(K_SIG);
 		open = 1;
-		os_wait2(K_TMO, open_time * 25);
+		os_wait2(K_TMO, open_time * tps);
 		open = 0;
 	}
 }
@@ -212,7 +208,7 @@ void CloseDoor(void) _task_ 6
 	{
 		os_wait1(K_SIG);
 		close = 1;
-		os_wait2(K_TMO, close_time * 25);
+		os_wait2(K_TMO, close_time * tps);
 		close = 0;
 	}
 }
